@@ -6,6 +6,7 @@ SKIP_DIRS = {
     ".idea", ".vscode", ".code-radar",
 }
 
+
 TEXT_EXTENSIONS = {
     ".py", ".js", ".ts", ".jsx", ".tsx", ".go", ".rs", ".java", ".c", ".cpp", ".h", ".hpp",
     ".html", ".css", ".scss", ".sass", ".less", ".vue", ".svelte",
@@ -15,3 +16,23 @@ TEXT_EXTENSIONS = {
     ".sql", ".graphql", ".gql", ".dockerfile", ".makefile", ".cmake",
     ".gitignore", ".dockerignore", ".env", ".lock",
 }
+
+
+UNSAFE_WORKSPACE_PATHS: frozenset[str] = frozenset(
+    {
+        "/",
+        "/System",
+        "/Library",
+        "/Applications",
+        "/Users",
+        "/Volumes",
+        "/private",
+        "/usr",
+        "/opt",
+        "/bin",
+        "/sbin",
+        "/etc",
+        "/var",
+        "/tmp",
+    }
+)

@@ -5,27 +5,7 @@ import os
 import re
 from collections.abc import Mapping
 from pathlib import Path
-
-
-_UNSAFE_WORKSPACE_PATHS: frozenset[str] = frozenset(
-    {
-        "/",
-        "/System",
-        "/Library",
-        "/Applications",
-        "/Users",
-        "/Volumes",
-        "/private",
-        "/usr",
-        "/opt",
-        "/bin",
-        "/sbin",
-        "/etc",
-        "/var",
-        "/tmp",
-    }
-)
-
+from code_radar.constants import UNSAFE_WORKSPACE_PATHS
 
 def sanitize_workspace_id(value: str, default: str = "default") -> str:
     raw = (value or "").strip().lower()
@@ -154,9 +134,6 @@ def resolve_sync_directory(configured_root: Path, directory: str | None) -> Path
     if requested.is_absolute():
         return requested.resolve()
 
-    # FIX: MCP clients often pass the workspace folder name (for example
-    # "gateway") even when the server is already configured at that folder.
-    # Treat that as the configured root instead of indexing gateway/gateway.
     if requested == Path(configured_root.name):
         return configured_root
 
@@ -171,7 +148,7 @@ def is_unsafe_workspace_root(path: str) -> bool:
     if resolved == Path(resolved.anchor):
         return True
 
-    return str(resolved) in _UNSAFE_WORKSPACE_PATHS
+    return str(resolved) in UNSAFE_WORKSPACE_PATHS
 
 
 def ensure_safe_workspace_root(
@@ -199,5 +176,3 @@ def ensure_safe_workspace_root(
         "Provide an explicit project path (e.g. code-radar serve /path/to/project). "
         "If you really want this, set CODE_ALLOW_UNSAFE_WORKSPACE=1."
     )
-
-
