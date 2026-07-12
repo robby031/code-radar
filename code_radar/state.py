@@ -40,8 +40,6 @@ class SyncProgress:
 
     def to_dict(self) -> dict:
         """Return a JSON-serialisable dict for MCP tool responses."""
-        # FIX: while a sync is running, expose live elapsed time instead of the
-        # last completed value. This prevents a stuck-looking 0.0 clock.
         elapsed = self.elapsed
         if self.is_running() and self.start_time > 0:
             elapsed = time.perf_counter() - self.start_time
