@@ -93,7 +93,6 @@ DEFAULT_RERANKER_MODEL_KEY = "reranker-0.6b-4bit"
 
 # Resolver Functions
 def get_model_config(key: str) -> ModelConfig:
-    """Ambil konfigurasi embedding model berdasarkan key."""
     if key not in MODEL_REGISTRY:
         available = ", ".join(MODEL_REGISTRY.keys())
         raise ValueError(f"Unknown model '{key}'. Available: {available}")
@@ -101,7 +100,6 @@ def get_model_config(key: str) -> ModelConfig:
 
 
 def get_reranker_model_config(key: str) -> RerankerModelConfig:
-    """Ambil konfigurasi reranker model berdasarkan key."""
     if key not in RERANKER_REGISTRY:
         available = ", ".join(RERANKER_REGISTRY.keys())
         raise ValueError(f"Unknown reranker model '{key}'. Available: {available}")
@@ -109,7 +107,6 @@ def get_reranker_model_config(key: str) -> RerankerModelConfig:
 
 
 def list_models() -> list[dict[str, object]]:
-    """List semua model embedding yang tersedia."""
     return [
         {
             "key": key,
@@ -125,7 +122,6 @@ def list_models() -> list[dict[str, object]]:
 
 
 def list_reranker_models() -> list[dict[str, object]]:
-    """List semua model reranker yang tersedia."""
     return [
         {
             "key": key,

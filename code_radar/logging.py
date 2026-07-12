@@ -1,11 +1,3 @@
-"""Lightweight logging module.
-
-* Single handler on ``code_radar`` logger only — prevents double
-  logging when other libraries (uvicorn, rich, etc.) configure the root
-  logger.
-* Compact format:  ``HH:MM:SS  LEVEL  module  message``
-"""
-
 import logging
 import sys
 from typing import Literal

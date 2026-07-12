@@ -536,8 +536,6 @@ async def async_sync_workspace(
             await loop.run_in_executor(None, _sparse_upsert_safe, sparse_index, pending_chunks)
             added_chunks += n
             if progress is not None:
-                # FIX: expose successful batch commits immediately so stuck
-                # embeddings are distinguishable from long but healthy sync.
                 progress.added_chunks = added_chunks
             hash_cache.put_batch(pending_hashes)
             pending_chunks.clear()
@@ -562,7 +560,6 @@ async def async_sync_workspace(
         await loop.run_in_executor(None, _sparse_upsert_safe, sparse_index, pending_chunks)
         added_chunks += n
         if progress is not None:
-            # FIX: keep final flush visible before wrap-up bookkeeping.
             progress.added_chunks = added_chunks
         hash_cache.put_batch(pending_hashes)
         pending_hashes.clear()
