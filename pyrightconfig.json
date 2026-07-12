@@ -1,0 +1,18 @@
+{
+  "venvPath": ".",
+  "venv": ".venv",
+  "pythonVersion": "3.13",
+  "typeCheckingMode": "basic",
+  "reportImportCycles": "none",
+  "reportUnusedCallResult": "none",
+  "reportMissingTypeArgument": "none",
+  "exclude": [
+    "**/.venv",
+    "**/__pycache__"
+  ],
+  "include": [
+    "code_radar",
+    "test_*.py",
+    "main.py"
+  ]
+}

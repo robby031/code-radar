@@ -1,0 +1,35 @@
+[project]
+name = "code-radar"
+version = "0.1.0"
+description = "Code Radar Embedding Engine - MCP server dengan MLX embeddings dan ChromaDB"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "chromadb>=1.5.9",
+    "mcp>=1.28.1",
+    "mlx>=0.32.0",
+    "mlx-lm>=0.31",
+    "transformers>=5,<5.13",
+    "numpy>=2.5.1",
+    "pathspec>=1.1.1",
+    "tree-sitter>=0.23.0",
+    "tree-sitter-language-pack>=0.2.0",
+    "huggingface-hub>=0.23.0",
+    "watchdog>=4.0.1"
+]
+
+[project.scripts]
+code-radar = "code_radar.cli:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.uv]
+package = true
+
+[dependency-groups]
+dev = []
+
+[tool.setuptools.packages.find]
+include = ["code_radar*"]
