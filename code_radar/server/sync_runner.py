@@ -88,8 +88,6 @@ async def run_sync_background(directory: str) -> None:
     progress.added_chunks = 0
     progress.deleted_files = 0
     progress.error = ""
-    # FIX: status endpoints should have a live clock even while the task waits
-    # for the shared sync lock or model readiness work.
     progress.start_time = time.perf_counter()
     progress.elapsed = 0.0
 

@@ -313,9 +313,6 @@ def resolve_reranker_timeout_ms(n: int) -> int:
     """Reranker timeout per candidate (ms)."""
     configured = state.env_int("CODE_RERANKER_TIMEOUT_MS", 0)
     if configured > 0:
-        # FIX: CODE_RERANKER_TIMEOUT_MS is documented and profiled as a
-        # per-candidate budget. Treating it as total request budget made
-        # 180-220ms profiles impossible for cross-encoder inference.
         return max(500, n * configured)
     return max(500, n * 250)
 
@@ -342,11 +339,6 @@ def resolve_reranker_worker_timeout_s(timeout_s: float) -> float:
     configured = state.env_int("CODE_RERANKER_WORKER_TIMEOUT_MS", 0)
     if configured > 0:
         return max(timeout_s, configured / 1000.0)
-
-    # FIX: The worker timeout must be larger than the reranker budget. The
-    # reranker can only notice timeout between batches; cutting the Future at
-    # the exact same time leaves the MLX call running in the background and
-    # makes later rerank requests queue until they also timeout.
     return timeout_s + max(1.0, min(10.0, timeout_s * 0.5))
 
 
@@ -615,8 +607,6 @@ def _locked_rerank(
     timeout_s: float,
 ) -> list[float]:
     """Serialize reranker calls to avoid GPU OOM."""
-    # FIX: Bound lock wait as part of the rerank budget so a previous stuck MLX
-    # batch does not let new requests pile up behind the GPU lock indefinitely.
     acquired = state._rerank_call_lock.acquire(timeout=max(0.001, timeout_s))
     if not acquired:
         raise RerankTimeoutError(
@@ -625,8 +615,6 @@ def _locked_rerank(
         )
 
     try:
-        # FIX: Carry the timeout into the reranker loop; it checks between
-        # batches and releases the lock through this finally block.
         return reranker.rerank(
             query,
             docs,
@@ -651,9 +639,6 @@ def run_rerank_with_timeout(
     try:
         return future.result(timeout=worker_timeout_s)
     except FuturesTimeoutError:
-        # FIX: Prevent queued timed-out tasks from accumulating behind the
-        # single rerank worker. A running MLX call cannot be killed safely from
-        # Python, but subsequent callers will now fail fast on the bounded lock.
         future.cancel()
         raise RerankTimeoutError(
             f"Reranker timed out after {worker_timeout_s:.1f}s for {len(docs)} docs "
